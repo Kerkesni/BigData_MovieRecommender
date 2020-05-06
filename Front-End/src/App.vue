@@ -26,8 +26,11 @@
       Clear Preferences
     </button>
     <br />
-    <button :disabled="count < 4" class="button" @click="getRecommendations">
-      Get Recommendation
+    <button :disabled="count < 4" class="button" @click="getRecommendationsPIP">
+      Get PIP Recommendation
+    </button>
+    <button :disabled="count < 4" class="button" @click="getRecommendationsCos">
+      Get COS Recommendation
     </button>
     <br>
     <button
@@ -106,9 +109,19 @@ export default {
       if (this.index - 1 < 0) this.index = this.mvs.length - 1;
       else this.index--;
     },
-    getRecommendations() {
+    getRecommendationsPIP() {
       axios
-        .post("http://localhost:5000", {
+        .post("http://localhost:5000/pip", {
+          taste: this.$store.getters.getProfile
+        })
+        .then(res => {
+          this.recommendations = res.data;
+        })
+        .catch(console.log);
+    },
+    getRecommendationsCos() {
+      axios
+        .post("http://localhost:5000/cos", {
           taste: this.$store.getters.getProfile
         })
         .then(res => {

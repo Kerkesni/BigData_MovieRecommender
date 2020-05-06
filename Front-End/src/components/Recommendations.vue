@@ -28,7 +28,7 @@ export default {
 
 .box {
   margin-top: 2em;
-  overflow: scroll;
+  overflow: auto;
 }
 
 .title {

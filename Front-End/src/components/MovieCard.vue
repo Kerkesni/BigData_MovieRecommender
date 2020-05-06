@@ -80,10 +80,12 @@ export default {
   min-height: 550px !important;
   .cover {
     width: 20em;
+    margin: auto;
   }
   .title {
     padding-top: 0.5em;
     font-size: 2em;
+    margin: auto;
   }
   .rating {
     padding-top: 0.5em;

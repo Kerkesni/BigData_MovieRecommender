@@ -26,18 +26,31 @@
       Clear Preferences
     </button>
     <br />
-    <button :disabled="count < 4" class="button" @click="getRecommendationsPIP">
-      Get PIP Recommendation
-    </button>
-    <button :disabled="count < 4" class="button" @click="getRecommendationsCos">
-      Get COS Recommendation
-    </button>
-    <br>
-    <button
-      v-if="recommendations.length > 0"
-      class="button"
-      @click="clearRec"
-    >
+    <div class="recommand_buttons">
+      <button
+        :disabled="count < 4"
+        class="button"
+        @click="getRecommendations('pip')"
+      >
+        Get PIP Recommendation
+      </button>
+      <button
+        :disabled="count < 4"
+        class="button"
+        @click="getRecommendations('acos')"
+      >
+        Get ACOS Recommendation
+      </button>
+      <button
+        :disabled="count < 4"
+        class="button"
+        @click="getRecommendations('jmsd')"
+      >
+        Get JMSD Recommendation
+      </button>
+    </div>
+    <br />
+    <button v-if="recommendations.length > 0" class="button" @click="clearRec">
       Clear Recommendation
     </button>
     <Recommendations
@@ -59,14 +72,14 @@ import movies from "./helpers/movies";
 export default {
   components: {
     MovieCard,
-    Recommendations
+    Recommendations,
   },
   data() {
     return {
       index: 0,
       year: "",
       title: "",
-      recommendations: []
+      recommendations: [],
     };
   },
   watch: {
@@ -75,22 +88,22 @@ export default {
     },
     title: function() {
       this.index = 0;
-    }
+    },
   },
   computed: {
     ...mapGetters({
-      count: "getTasteCount"
+      count: "getTasteCount",
     }),
     mvs: function() {
       var tmp = movies;
       if (this.year)
-        tmp = tmp.filter(a =>
+        tmp = tmp.filter((a) =>
           a.title
             .substring(a.title.length - 5, a.title.length - 1)
             .includes(this.year)
         );
       if (this.title)
-        tmp = tmp.filter(a =>
+        tmp = tmp.filter((a) =>
           a.title.toLowerCase().includes(this.title.toLowerCase())
         );
       return tmp;
@@ -98,7 +111,7 @@ export default {
     movieToShow: function() {
       if (this.mvs) return this.mvs[this.index];
       return {};
-    }
+    },
   },
   methods: {
     next() {
@@ -109,22 +122,12 @@ export default {
       if (this.index - 1 < 0) this.index = this.mvs.length - 1;
       else this.index--;
     },
-    getRecommendationsPIP() {
+    getRecommendations(type) {
       axios
-        .post("http://localhost:5000/pip", {
-          taste: this.$store.getters.getProfile
+        .post(`http://localhost:5000/${type}`, {
+          taste: this.$store.getters.getProfile,
         })
-        .then(res => {
-          this.recommendations = res.data;
-        })
-        .catch(console.log);
-    },
-    getRecommendationsCos() {
-      axios
-        .post("http://localhost:5000/cos", {
-          taste: this.$store.getters.getProfile
-        })
-        .then(res => {
+        .then((res) => {
           this.recommendations = res.data;
         })
         .catch(console.log);
@@ -132,10 +135,10 @@ export default {
     clear: function() {
       this.$store.commit("clearMovies");
     },
-    clearRec: function(){
-      this.recommendations = []
-    }
-  }
+    clearRec: function() {
+      this.recommendations = [];
+    },
+  },
 };
 </script>
 
@@ -163,5 +166,8 @@ export default {
 .button {
   margin: auto;
   width: 30%;
+}
+.recommand_buttons{
+  display: inline-flex;
 }
 </style>
